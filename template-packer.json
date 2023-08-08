@@ -1,0 +1,97 @@
+{
+  "variables": {
+    "vm_version": "1.0.0",
+    "vm_description": "Minimal RockyLinux8 image"
+  },
+  "builders": [
+    {
+      "boot_command": [
+        "<up><tab> ip=dhcp text inst.ks=http://{{ .PackerHTTPIP }}:{{ .PackerHTTPPort }}/ks.cfg<enter><wait>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": 15000,
+      "guest_os_type": "RedHat_64",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "sha256:4ce0948699a26f66dffd705c0459d428439cef02d5db43d36a6ae62ba494fe9e",
+      "iso_url": "https://download.rockylinux.org/pub/rocky/8/isos/x86_64/Rocky-8.8-x86_64-minimal.iso",
+      "shutdown_command": "echo '/sbin/halt -h -p' > /tmp/shutdown.sh; echo 'vagrant'|sudo -S sh '/tmp/shutdown.sh'",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_timeout": "10000s",
+      "ssh_username": "vagrant",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "4096"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--graphicscontroller",
+          "vmsvga"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--vram",
+          "64"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ],
+	[
+          "modifyvm",
+          "{{.Name}}",
+	  "--nic1",
+	  "nat"
+	]
+      ],
+      "export_opts": [
+         "--manifest",
+         "--vsys", "0",
+         "--description", "{{user `vm_description`}}",
+         "--version", "{{user `vm_version`}}"
+         ],
+      "format": "ova",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "rocky8"
+    }
+  ],
+  "post-processors": [
+    {
+      "compression_level": 9,
+      "keep_input_artifact": true,
+      "override": {
+        "virtualbox": {
+          "output": "rocky8-x64-virtualbox.box"
+        }
+      },
+      "type": "vagrant"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'",
+      "override": {
+        "virtualbox-iso": {
+          "scripts": [
+            "scripts/base.sh",
+            "scripts/virtualbox.sh",
+            "scripts/vagrant.sh",
+            "scripts/cleanup.sh"
+          ]
+        }
+      },
+      "type": "shell"
+    }
+  ]
+}
+
