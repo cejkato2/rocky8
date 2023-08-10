@@ -6,7 +6,7 @@
   "builders": [
     {
       "boot_command": [
-        "<up><tab> ip=dhcp text inst.ks=http://{{ .PackerHTTPIP }}:{{ .PackerHTTPPort }}/ks.cfg<enter><wait>"
+        "<up><tab> ip=dhcp text inst.ks=https://raw.githubusercontent.com/cejkato2/rocky8/main/http/ks.cfg<enter><wait>"
       ],
       "boot_wait": "10s",
       "disk_size": 15000,
@@ -45,13 +45,7 @@
           "{{.Name}}",
           "--cpus",
           "2"
-        ],
-	[
-          "modifyvm",
-          "{{.Name}}",
-	  "--nic1",
-	  "nat"
-	]
+        ]
       ],
       "export_opts": [
          "--manifest",
