@@ -31,3 +31,7 @@ NAT networks can be listed by `vboxmanage list natnets`, host has IP address .2 
 **Note2:** for VirtualBox, packer doc claims `.HTTPIP` is hardcoded to
 `10.0.2.2`, so check `boot_command` and set proper value.
 
+## See also
+
+The result of this build is publicly available as a VirtualBox vagrant box at: https://app.vagrantup.com/cejkat/boxes/rocky8/versions/1.0.0
+
